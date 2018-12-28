@@ -60,13 +60,14 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     return y    
 
 for file in os.listdir("../decoded-input"):
-    os.remove(os.path.join("../../decoded-input/" , file))
+#    os.remove(os.path.join("../../decoded-input/" , file))
     
-for file in os.listdir("../audio-recording-input"):
-    if file.endswith(".aac"):
+#for file in os.listdir("../audio-recording-input"):
+#    if file.endswith(".aac"):
+    if file.endswith(".wav"):
         print(os.path.join(file))
         
-        decode(os.path.join("../audio-recording-input/" , file))
+#        decode(os.path.join("../audio-recording-input/" , file))
     #    decode('zambani_sitting.aac')
         
         #Fetch WAV Audio
@@ -98,7 +99,8 @@ for file in os.listdir("../audio-recording-input"):
         # =============================================================================
         
     #    testSig = wave.open('zambani_sitting.aac.wav','r')
-        testSig = wave.open(os.path.join("../decoded-input/" , file) + '.wav','r')
+#        testSig = wave.open(os.path.join("../decoded-input/" , file) + '.wav','r')
+        testSig = wave.open(os.path.join("../decoded-input/" , file),'r')
         
         testSig = testSig.readframes(-1)
         testSig = np.fromstring(testSig, 'Int16')
@@ -122,11 +124,12 @@ for file in os.listdir("../audio-recording-input"):
         # fig.savefig('test-sig-filter.png' , dpi=128)
         # =============================================================================
         
-        correlated = signal.correlate(testSigFiltered, directSigFiltered, mode='same')
+#        correlated = signal.correlate(testSigFiltered, directSigFiltered, mode='same')
+        correlated = signal.correlate(testSigFiltered, directSig, mode='same')
         fig = plt.figure(1)
-        Pxx, freqs, bins, im = plt.specgram(correlated, NFFT=128, Fs=fs, 
-                                            window=np.hanning(128), 
-                                            noverlap=127)
+        Pxx, freqs, bins, im = plt.specgram(correlated, NFFT=256, Fs=1000, 
+                                            window=np.hanning(256), 
+                                            noverlap=250)
         
         plt.title('Spectrogram of Correlated Signal')
         plt.ylabel('Frequency [Hz]')
@@ -134,4 +137,4 @@ for file in os.listdir("../audio-recording-input"):
 #       fig.colorbar()
 #       plt.show()
 
-        fig.savefig(os.path.join(file) + '-spectrogram.jpg' , dpi=128)
+        fig.savefig(os.path.join(file) + '-spectrogram.jpg' , dpi=1024)
